@@ -16,6 +16,54 @@ function confirmLogout() {
 }
 
 
+
+$(document).ready(function () {
+    $('#sortBy').select({
+        placeholder: "Select sort option",
+        allowClear: true,
+    });
+
+    var table = $('#history').DataTable({
+        dom: 'lBfrtip',
+        buttons: ['copy', 'excel'],
+        serverSide: true,
+        lengthChange: true,
+        responsive: true,
+        autoWidth: false,
+        ajax: {
+            url: "fetch.php",
+            type: "POST",
+            data: function (d) {
+                d.history = true;
+                d.sortby = $('#sortBy').val();
+            },
+            error: function (xhr, error, thrown) {
+                console.log("Ajax Failed: " + thrown);
+            }
+        },
+        columns: [
+            {
+                "data": "grouped_date",
+                "title": "Date",
+                "render": function (data, type, row) {
+                    if (type === "display" || type === "filter") {
+                        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                        return new Date(data).toLocaleDateString('en-US', options);
+                    }
+                    return data;
+                }
+            },
+            { "data": "average_water_level", "title": "Average Water Level" },
+        ],
+    });
+
+
+    $('#sortBy').on('change', function () {
+        table.ajax.reload();
+    });
+});
+
+
 document.addEventListener('DOMContentLoaded', function () {
     var currentLocation = location.href;
     var menuItem = document.querySelectorAll('#sidebarNav .nav-link');
