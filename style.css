@@ -1,0 +1,128 @@
+
+
+/* 
+.content-wrapper{
+    background-image: url("img/rain.jpg");
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-size: cover;
+} */
+
+#location-name {
+    color: #000000; 
+    font-weight: bold;
+    font-size: 35px;
+}
+#date-time{
+    color: #000000;  
+    font-weight: bold;
+    font-size: 25px;
+}
+
+
+.current-weather {
+    margin-top: 20px;
+}
+
+.current-weather img {
+    width: 100px;
+    height: 100px;
+}
+
+
+#temperature {
+    font-size: 30px;
+    font-weight: bold;
+    color: #000000; 
+}
+
+#condition {
+    font-size: 25px;
+    font-weight: bold;
+    color: #000000; 
+}
+
+.additional-info {
+    margin-top: 16px;
+    font-size: 20px;
+    color: #000000; 
+    text-align: center;
+    font-weight: bold;
+}
+
+.additional-info p {
+    margin: 5px 0;
+}
+
+#flood-chance{
+    font-size: 25px;
+    color:black;
+    font-weight: bold;
+}
+
+.text-success {
+    color: #000000;  
+    font-weight: bold;
+}
+
+.text-warning {
+    color: yellow; 
+    font-weight: bold;
+}
+
+.text-danger {
+    color: red; 
+    font-weight: bold;
+}
+
+.hourly-forecast {
+    display: flex;
+    overflow-x: scroll;
+    margin-top: 20px;
+}
+
+.hour-block {
+    width: 80px;
+    margin-right: -10px;
+    padding: 10px;
+    background: transparent;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hour-time {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000000; 
+}
+
+.hour-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.hour-temp {
+    font-size: 18px;
+    color: #000000;  
+}
+
+.hour-condition {
+    font-size: 14px;
+    color: #000000; 
+}
+
+.hour-rain {
+    font-size: 12px;
+    color: #000000; 
+
+}
+
+.hour-precip {
+    font-size: 12px;
+    color: #000000; 
+
+}
+
+#flood-chance{
+    color: #000000; 
+}
