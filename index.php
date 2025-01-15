@@ -39,8 +39,12 @@ include('header.php');
                     <p id="location-name"><span><p id="date-time"></p></span></p>
                 </div>
                 <div class="col-md-6">
-                    <p id="flood-chance" class="float-right"></p>
+                    <p id="flood-chance" class="float-right"><span><p style="color:black; font-weight:bold; font-size:25px"  id="total-volume">Total Volume: Loading...</pv></span></p>
                 </div>
+               
+            </div>
+            <div class="row">
+    
             </div>
         </div>
     </div>
@@ -124,5 +128,6 @@ include('header.php');
   
 </div>
   </div>
+
   <!-- /.content-wrapper -->
   <?php include ('footer.php');  ?>

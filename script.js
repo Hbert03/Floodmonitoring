@@ -15,6 +15,90 @@ function confirmLogout() {
     });
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    async function fetchVolumeData() {
+        const response = await fetch('get_volume.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'action=get_last_data'
+        });
+
+        const data = await response.json();
+        const { stations, total_volume } = data;
+
+
+        Object.keys(stations).forEach(station => {
+            const stationData = stations[station];
+            const stationElement = document.getElementById(station.toLowerCase());
+            if (stationElement) {
+                stationElement.innerText = `${station.toUpperCase()}: Volume = ${stationData.volume_cm3.toFixed(2)} cm³ (Water Level: ${stationData.water_level} cm)`;
+            }
+        });
+
+
+        const totalVolumeDiv = document.getElementById('total-volume');
+        if (totalVolumeDiv) {
+            totalVolumeDiv.innerText = `Total Volume: ${total_volume.toFixed(2)} cm³`;
+        } else {
+            console.error('The total volume div could not be found!');
+        }
+    }
+
+
+    fetchVolumeData();
+
+    setInterval(fetchVolumeData, 5000);
+});
+
+$(document).ready(function () {
+    
+            $("button.save").on("click", function(event){
+                event.preventDefault();
+                var requiredFilled = true;
+                $("#addForm input, #addForm select").each(function() {
+                  if ($(this).prop("required") && !$(this).val()) {
+                        requiredFilled = false;
+                        $(this).addClass("is-invalid");
+                    } else {
+                        $(this).removeClass("is-invalid");
+                    }
+                });
+          
+                if (requiredFilled) {
+                    $.ajax({
+                        url: "function.php",
+                        type: "POST",
+                        data: $("#addForm").serialize() + "&save=true",
+                        success: function(response) {
+                            try {
+                                response = JSON.parse(response);
+                            } catch (e) {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: "Failed to parse JSON response: " + e,
+                                    icon: "error"
+                                });
+                                return;
+                            }
+          
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Student Successfully Saved!",
+                                    showConfirmButton: true
+                                })
+                            } else {
+                                toastr.error("Verify your Entry: " + response.error);
+                            }
+                        }
+                    });
+                } else {
+                    toastr.error("Please fill out all required fields.");
+                }
+            });
+   })
+
+
 
 
 $(document).ready(function () {

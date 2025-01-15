@@ -102,7 +102,7 @@
       <a href="#" class="nav-link">
       <i class="nav-icon fas fa-caret-down"></i>
         <p>
-          Station
+          Stream
           <i class="right fas fa-angle-left"></i>
         </p>
       </a>
@@ -110,22 +110,28 @@
         <li class="nav-item">
           <a href="station1.php" class="nav-link">
           <i class=" nav-icon fas fa-tint"></i>
-            <p>Station 1</p>
+            <p>Upper Stream</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="station2.php" class="nav-link">
           <i class=" nav-icon fas fa-tint"></i>
-            <p>Station 2</p>
+            <p>Middle Stream</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="station3.php" class="nav-link">
           <i class=" nav-icon fas fa-tint"></i>
-            <p>Station 3</p>
+            <p>Down Stream</p>
           </a>
         </li>
       </ul>
+    </li>
+    <li class="nav-item ">
+      <a href="add_recipients.php" class="nav-link">
+      <i class="nav-icon fas fa-user"></i>
+        <p>Add Recipients</p>
+      </a>
     </li>
     <li class="nav-item ">
       <a href="history.php" class="nav-link">
