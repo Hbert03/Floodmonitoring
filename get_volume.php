@@ -2,11 +2,10 @@
 include 'db.php';
 session_start();
 
-// Cross-sectional areas (in cm²) for each station
 $areas = [
-    '1' => 1000, // Example area for station 1
-    '2' => 1200, // Example area for station 2
-    '3' => 1100  // Example area for station 3
+    '1' => 1000, 
+    '2' => 1200, 
+    '3' => 1100  
 ];
 
 function fetchLastInsertedData($conn, $station) {
@@ -31,7 +30,7 @@ foreach (['1', '2', '3'] as $station) {
     }
 }
 
-// Prepare the response
+    
 $response = [
     'stations' => $data,
     'total_volume' => $totalVolume

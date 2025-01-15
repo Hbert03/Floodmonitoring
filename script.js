@@ -15,6 +15,39 @@ function confirmLogout() {
     });
 }
 
+function checkWaterLevel(station) {
+
+    fetch('send_sms.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'station=' + station 
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message); 
+
+        if (data.status === 'sms_sent') {
+            console.log(`SMS successfully sent to station ${station}.`);
+        } else if (data.status === 'warning' || data.status === 'critical') {
+
+            console.log(`Station ${station} - Message to be sent: ${data.message}`);
+        } else {
+            console.log(`Station ${station} - No SMS sent: ${data.message}`);
+        }
+    })
+    .catch(error => console.error('Error fetching water level:', error));
+}
+
+setInterval(function() {
+    for (let station = 1; station <= 3; station++) {
+        checkWaterLevel(station);  // Pass station number dynamically
+    }
+}, 10000);  // 10-second interval
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     async function fetchVolumeData() {
         const response = await fetch('get_volume.php', {

@@ -89,9 +89,9 @@ include('header.php');
                                 <label>Station</label>
                                 <select class="form-control mb-2" name="station" id="station" required >
                                 <option value="" disabled selected>Please Select</option>
-                                    <option value="1">Station 1</option>
-                                    <option value="2">Station 2</option>
-                                    <option value="3">Station 3</option>
+                                    <option value="1">Upper Stream</option>
+                                    <option value="2">Middle Stream</option>
+                                    <option value="3">Down Stream</option>
                                 </select>
                             </div>
                         </div>

@@ -46,43 +46,7 @@ if ($conn->query($sql_insert) === TRUE) {
     echo "Error: " . $sql_insert . "<br>" . $conn->error;
 }
 
-if ($water_level < 50) {
-    // Prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT phone_number FROM recipients WHERE station = ?");
-    $stmt->bind_param("s", $station);  // Assuming $station is a string
-    $stmt->execute();
-    $recipients_result = $stmt->get_result();
 
-    if ($recipients_result && $recipients_result->num_rows > 0) {
-        $message = "Alert: Water level at station $station is critically low ($water_level). Please take precautionary measures."; // Define message early
-
-        while ($recipient = $recipients_result->fetch_assoc()) {
-            $phone_number = $recipient['phone_number'];
-
-            $api_key = 'f770208e20af697387421fcf32ba90da';
-            if (strpos($phone_number, '0') === 0) {
-                $phone_number = '+63' . substr($phone_number, 1); 
-            }
-
-    
-            $url = "https://api.semaphore.co/api/v4/messages?apikey=$api_key&number=$phone_number&message=" . urlencode($message);
-            
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $response = curl_exec($ch);
-            curl_close($ch);
-
-            if ($response) {
-                echo "SMS sent to $phone_number\n";
-            } else {
-                echo "Failed to send SMS to $phone_number\n";
-            }
-        }
-    } else {
-        echo "No recipients found for station $station.";
-    }
-}
 
 
 $conn->close();
