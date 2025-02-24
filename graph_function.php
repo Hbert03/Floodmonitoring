@@ -1,44 +1,60 @@
 <?php
-
 include('db.php');
 
-function getStationData($stationId) {
+function getAllStationsData() {
     global $conn;
 
     if (!$conn) {
         die("Database connection failed: " . mysqli_connect_error());
     }
 
-    $data = array('labels' => array(), 'values' => array());
-    $sql = "SELECT water_level, DATE_FORMAT(date_acquired, '%Y-%m-%d %H:%i:%s') AS date 
+    $fixedHeight = 304;
+
+    $data = [
+        'labels' => [],
+        'stations' => [
+            'station1' => ['values' => [], 'label' => 'Station 1'],
+            'station2' => ['values' => [], 'label' => 'Station 2'],
+            'station3' => ['values' => [], 'label' => 'Station 3'],
+        ]
+    ];
+
+    $sql = "SELECT station, water_level, DATE_FORMAT(date_acquired, '%Y-%m-%d %H:%i:%s') AS date 
             FROM water_level_log 
-            WHERE MONTH(date_acquired) = MONTH(CURDATE()) AND station = ? 
+            WHERE MONTH(date_acquired) = MONTH(CURDATE()) 
             ORDER BY date_acquired DESC";
 
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $stationId);
-        $stmt->execute();
-        $stmt->bind_result($waterLevel, $date);
+    $result = $conn->query($sql);
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            if (!in_array($row['date'], $data['labels'])) {
+                $data['labels'][] = $row['date'];
+            }
+            if ($row['water_level'] > 300) {
+                continue;
+            }
 
-        while ($stmt->fetch()) {
-            $data['labels'][] = $date;  
-            $data['values'][] = $waterLevel; 
+            $actualWaterLevel = $fixedHeight - floatval($row['water_level']);
+            
+            switch ($row['station']) {
+                case 1:
+                    $data['stations']['station1']['values'][] = $actualWaterLevel;
+                    break;
+                case 2:
+                    $data['stations']['station2']['values'][] = $actualWaterLevel;
+                    break;
+                case 3:
+                    $data['stations']['station3']['values'][] = $actualWaterLevel;
+                    break;
+            }
         }
-        $stmt->close();
-    } else {
-        echo "SQL preparation error: " . $conn->error;
     }
 
-    return $data;
+    header('Content-Type: application/json');
+    echo json_encode($data);
+
+    $conn->close();
 }
 
-
-$stationId = isset($_GET['station']) ? intval($_GET['station']) : 1; 
-$data = getStationData($stationId);
-
-header('Content-Type: application/json');
-echo json_encode($data);
-
-$conn->close();
+getAllStationsData();
 ?>
-

@@ -14,11 +14,11 @@ $(function () {
             return {
                 value: this._initialValue,
                 valueIndicator: {
-                    color: '#222629' // Indicator color
+                    color: '#222629' 
                 },
                 geometry: {
                     startAngle: 180,
-                    endAngle: 360 // Semi-circular gauge
+                    endAngle: 360 
                 },
                 scale: {
                     startValue: 0,
@@ -122,17 +122,17 @@ function updatestation1(){
     
         // Initialize gauges with fetched data
         initializeGauge('.station_1_waterlevel', {
-            initialValue: parseFloat(waterLevelData),
+            initialValue: parseFloat(waterLevelData) / 304 * 100,
             higherValue: 100,
-            title: `Water Level`,
-            subtitle: `${parseFloat(waterLevelData)} cm`
+            title: ` Station 1 - Water Level <b> Critical: (279 cm above) Warning: (210 cm above) </b>`,
+           subtitle: parseFloat(waterLevelData) + 'cm'
         });
     
         initializeGauge('.station_1_turbidity', {
-            initialValue: parseFloat(turbidityData) * 100,
+            initialValue: parseFloat(turbidityData) /37 * 100,
             higherValue: 100,
-            title: `Turbidity`,
-            subtitle: `${parseFloat(turbidityData) * 100} %`
+            title: `Station 1 - Turbidity <b>Normal: 20%</b>`,
+        subtitle: `${Math.round((parseFloat(waterLevelData) / 500 ) * 100)} %`
         });
     });
 }
@@ -190,17 +190,17 @@ function updateStation2(){
 
         // Initialize turbidity gauge
         initializeGauge('.station_2_waterlevel', {
-            initialValue: parseFloat(waterLevelData),
+            initialValue: Math.round((parseFloat(waterLevelData) / 304) * 100), 
             higherValue: 100,
-            title: `Water level`,
-            subtitle: `${parseFloat(waterLevelData)} cm`
+            title: `Station 2 - Water Level <b> Critical: (279 cm above) Warning: (210 cm above) </b>`,
+            subtitle: parseFloat(waterLevelData) + 'cm'
         });
 
         // Initialize water level gauge
         initializeGauge('.station_2_raindrop', {
             initialValue: parseFloat(rainfallData) * 100,
             higherValue: 100,
-            title: `Rain Drop`,
+            title: `Station 2- Rain Drop`,
              subtitle: `${parseFloat(rainfallData) * 100} %`
         });
     });
@@ -263,17 +263,17 @@ function updateStation3(){
 
         // Initialize turbidity gauge
         initializeGauge('.station_3_waterlevel', {
-            initialValue: parseFloat(waterLevelData),
+            initialValue: parseFloat(waterLevelData) / 304 * 100,
             higherValue: 100,
-            title: `Water level`,
-            subtitle: `${parseFloat(waterLevelData)} cm`
+            title: `Station 3 - Water Level <b> Critical: (279 cm above) Warning: (210 cm above) </b>`,
+           subtitle: parseFloat(waterLevelData) + 'cm'
         });
 
         // Initialize water level gauge
         initializeGauge('.station_3_raindrop', {
             initialValue: parseFloat(rainfallData) * 100,
             higherValue: 100,
-            title: `Rain Drop`,
+            title: `Station 3 - Rain Drop`,
              subtitle: `${parseFloat(rainfallData) * 100} %`
         });
     });

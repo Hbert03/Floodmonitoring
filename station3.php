@@ -82,17 +82,17 @@ include('header.php');
           <!-- /.col -->
           <div class="card">
   <div class="card-header">
-    <h3 class="card-title">Water Level & Turbidity</h3>
+    <h3 class="card-title">Water Level & Rain Drop</h3>
   </div>
   <div class="card-body">
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-md-6">
         <div class="station_3_waterlevel" style="height:250px"></div>
       </div>
       <div class="col-md-6">
         <div class="station_3_raindrop" style="height:250px" ></div>
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
         </div>

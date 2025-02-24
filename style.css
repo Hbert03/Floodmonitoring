@@ -126,3 +126,47 @@
 #flood-chance{
     color: #000000; 
 }
+
+@media print {
+    
+    body * {
+        visibility: hidden; /* Hide everything by default */
+    }
+    #printSection, #printSection * {
+        visibility: visible; /* Show only the report table */
+    }
+    #printSection {
+        margin-top: -5em;
+        width: 210mm;  
+        height: auto; 
+        transform: translateX(-20%); 
+      
+        /* padding: 10mm;  */
+        text-align: center;
+    }
+    .print {
+        width: 100%;
+        height: auto; 
+        border-collapse: collapse;
+        text-align: center;
+    }
+
+ 
+    .print table {
+        width: 100%;
+        height: auto; 
+        border-collapse: collapse;
+       
+    }
+
+   
+    .no-print {
+        display: none !important;
+    }
+
+    /* #modalReportContent {
+        page-break-before: always;
+        page-break-inside: auto;
+        overflow: visible;
+    } */
+}

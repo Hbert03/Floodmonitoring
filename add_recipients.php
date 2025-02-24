@@ -85,7 +85,7 @@ include('header.php');
                                 </select>
                             </div>
 
-                            <div class="col">
+                            <!-- <div class="col">
                                 <label>Station</label>
                                 <select class="form-control mb-2" name="station" id="station" required >
                                 <option value="" disabled selected>Please Select</option>
@@ -93,7 +93,7 @@ include('header.php');
                                     <option value="2">Middle Stream</option>
                                     <option value="3">Down Stream</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
      
                     </div>
@@ -111,10 +111,55 @@ include('header.php');
             <!-- /.card -->
           </div>
           <!-- /.col -->
-       
+          <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title"></h5>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+              <div class="table-responsive">
+              <!-- <select id="sortBy" class="form-control w-25 mb-3">
+                <option value="">Sort By</option>
+                <option value="day">Day</option>
+                <option value="month">Month</option>
+                <option value="year">Year</option>
+            </select> -->
+          <table id="resident_table" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Fullname</th>
+                <th>Phone Numner</th>
+                <th>Residents Type</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+     
+                    </div>
+ 
+                 </div>
+                </div>
+                <!-- /.row -->
+              </div>
 </div>
+
         </div>
         <!-- /.row -->
+         
 </div>
 </section>
 

@@ -15,73 +15,183 @@ function confirmLogout() {
     });
 }
 
-function checkWaterLevel(station) {
 
+function checkWaterLevel() {
     fetch('send_sms.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'station=' + station 
+        }
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data.message); 
+        // console.log(`[${new Date().toLocaleTimeString()}] ${data.message}`);
 
         if (data.status === 'sms_sent') {
-            console.log(`SMS successfully sent to station ${station}.`);
+            // console.log("✅ SMS successfully sent to all recipients.");
         } else if (data.status === 'warning' || data.status === 'critical') {
-
-            console.log(`Station ${station} - Message to be sent: ${data.message}`);
+            // console.log(`⚠️ Alert: ${data.message}`);
         } else {
-            console.log(`Station ${station} - No SMS sent: ${data.message}`);
+            // console.log("ℹ️ No SMS sent. Status: " + data.status);
         }
     })
-    .catch(error => console.error('Error fetching water level:', error));
+    .catch(error => console.error("❌ Error fetching water level:", error));
 }
 
-setInterval(function() {
-    for (let station = 1; station <= 3; station++) {
-        checkWaterLevel(station);  // Pass station number dynamically
-    }
-}, 10000);  // 10-second interval
+
+setInterval(checkWaterLevel, 10000);
 
 
+$(function () {
+    let gauge;
 
-document.addEventListener('DOMContentLoaded', function() {
-    async function fetchVolumeData() {
-        const response = await fetch('get_volume.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'action=get_last_data'
-        });
-
-        const data = await response.json();
-        const { stations, total_volume } = data;
-
-
-        Object.keys(stations).forEach(station => {
-            const stationData = stations[station];
-            const stationElement = document.getElementById(station.toLowerCase());
-            if (stationElement) {
-                stationElement.innerText = `${station.toUpperCase()}: Volume = ${stationData.volume_cm3.toFixed(2)} cm³ (Water Level: ${stationData.water_level} cm)`;
+    function initGauge() {
+        gauge = $("#gaugeContainer").dxCircularGauge({
+            value: 0,  // Initial value
+            valueIndicator: {
+                color: '#222629'
+            },
+            geometry: {
+                startAngle: 180,
+                endAngle: 360
+            },
+            scale: {
+                startValue: 0,
+                endValue: 10,
+                customTicks: [0, 2, 4, 6, 8, 10], 
+                tick: {
+                    length: 8
+                },
+                label: {
+                    font: {
+                        color: '#222629',
+                        size: 9,
+                        family: '"Open Sans", sans-serif'
+                    }
+                }
+            },
+            title: {
+                verticalAlignment: 'bottom',
+                text: "Water Speed",
+                font: {
+                    family: '"Open Sans", sans-serif',
+                    color: '#222629',
+                    size: 12
+                },
+                subtitle: {
+                    text: "0 m/s",
+                    font: {
+                        family: '"Open Sans", sans-serif',
+                        color: '#222629',
+                        weight: 700,
+                        size: 20
+                    }
+                }
             }
-        });
-
-
-        const totalVolumeDiv = document.getElementById('total-volume');
-        if (totalVolumeDiv) {
-            totalVolumeDiv.innerText = `Total Volume: ${total_volume.toFixed(2)} cm³`;
-        } else {
-            console.error('The total volume div could not be found!');
-        }
+        }).dxCircularGauge("instance");
     }
 
+    $(function () {
+        let gauge1, gauge2;
+    
+        function initGauge() {
+            gauge1 = $("#gaugeContainer").dxCircularGauge({
+                value: 0,  
+                valueIndicator: { color: '#222629' },
+                geometry: { startAngle: 180, endAngle: 360 },
+                scale: {
+                    startValue: 0,
+                    endValue: 10,
+                    customTicks: [0, 2, 4, 6, 8, 10], 
+                    tick: { length: 8 },
+                    label: {
+                        font: { color: '#222629', size: 9, family: '"Open Sans", sans-serif' }
+                    }
+                },
+                title: {
+                    verticalAlignment: 'bottom',
+                    text: "Water Speed (Station 1 → 2)",
+                    font: { family: '"Open Sans", sans-serif', color: '#222629', size: 12 },
+                    subtitle: {
+                        text: "0 m/s",
+                        font: { family: '"Open Sans", sans-serif', color: '#222629', weight: 700, size: 20 }
+                    }
+                }
+            }).dxCircularGauge("instance");
+    
+            gauge2 = $("#gaugeContainer1").dxCircularGauge({
+                value: 0,  
+                valueIndicator: { color: '#222629' },
+                geometry: { startAngle: 180, endAngle: 360 },
+                scale: {
+                    startValue: 0,
+                    endValue: 10,
+                    customTicks: [0, 2, 4, 6, 8, 10], 
+                    tick: { length: 8 },
+                    label: {
+                        font: { color: '#222629', size: 9, family: '"Open Sans", sans-serif' }
+                    }
+                },
+                title: {
+                    verticalAlignment: 'bottom',
+                    text: "Water Speed (Station 2 → 3)",
+                    font: { family: '"Open Sans", sans-serif', color: '#222629', size: 12 },
+                    subtitle: {
+                        text: "0 m/s",
+                        font: { family: '"Open Sans", sans-serif', color: '#222629', weight: 700, size: 20 }
+                    }
+                }
+            }).dxCircularGauge("instance");
+        }
+    
 
-    fetchVolumeData();
 
-    setInterval(fetchVolumeData, 5000);
+        async function fetchVolumeData() {
+            try {
+                const response = await fetch('get_volume.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'action=get_last_data'
+                });
+    
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    
+                const dataResponse = await response.json();
+                const { highest_levels, total_volume, velocity } = dataResponse;
+    
+                $("#station-1").text(`Station 1: ${highest_levels.station_1} cm`);
+                $("#station-2").text(`Station 2: ${highest_levels.station_2} cm`);
+                $("#station-3").text(`Station 3: ${highest_levels.station_3} cm`);
+                $("#total-volume").text(`Total Volume: ${total_volume.toFixed(2)} cm³`);
+    
+                let waterSpeed1to2 = velocity.station_1_to_2.toFixed(2);
+                let waterSpeed2to3 = velocity.station_2_to_3.toFixed(2);
+    
+ 
+                gauge1.option("value", parseFloat(waterSpeed1to2));
+                gauge1.option("title.subtitle.text", `${waterSpeed1to2} m/s`);
+    
+               
+                gauge2.option("value", parseFloat(waterSpeed2to3));
+                gauge2.option("title.subtitle.text", `${waterSpeed2to3} m/s`);
+    
+            } catch (error) {
+                // console.error("Error fetching volume data:", error);
+            }
+        }
+    
+        initGauge(); 
+        fetchVolumeData();
+        setInterval(fetchVolumeData, 5000);
+    });
+    
+    initGauge(); 
+    fetchVolumeData();  
+    setInterval(fetchVolumeData, 5000); 
 });
+
+
+
 
 $(document).ready(function () {
     
@@ -155,13 +265,13 @@ $(document).ready(function () {
                 d.sortby = $('#sortBy').val();
             },
             error: function (xhr, error, thrown) {
-                console.log("Ajax Failed: " + thrown);
+                // console.log("Ajax Failed: " + thrown);
             }
         },
         columns: [
             {
                 "data": "grouped_date",
-                "title": "Date",
+              
                 "render": function (data, type, row) {
                     if (type === "display" || type === "filter") {
                         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -170,7 +280,7 @@ $(document).ready(function () {
                     return data;
                 }
             },
-            { "data": "average_water_level", "title": "Average Water Level" },
+            { "data": "average_water_level"},
         ],
     });
 
@@ -181,6 +291,193 @@ $(document).ready(function () {
 });
 
 
+
+
+$(document).ready(function () {
+ $('#resident_table').DataTable({
+               serverSide: true,
+               lengthChange: true,
+               responsive: true,
+               autoWidth: false,
+               ajax: {
+                   url: "fetch.php",
+                   type: "POST",
+                   data: {residents: true},
+                   error: function(xhr, error, thrown) {
+                    //    console.log("Ajax Failed: " + thrown);
+                   }
+               },
+               columns: [
+                   { "data": "fullname" },
+                   { "data": "phone_number" },
+                   { "data": "residents_type" },
+                   {"data": null,
+                       "render": function(data, type, row){
+                           return "<button class='btn btn-info btn-sm edit' data-residents='"+row.id+"'>Edit<span><i style='margin-left:2px' class='fas fa-pen'></i></span></button>";
+                       }
+                   },
+                   {"data": null,
+                       "render": function(data, type, row){
+                           return "<button class='btn btn-danger btn-sm delete' data-residents='"+row.id+"'>Delete<span><i style='margin-left:2px' class='fas fa-trash'></i></span></button>";
+                       }
+                   }
+               ],
+               drawCallback: function(){
+                   edit();
+                   deleteid();
+               }
+           });
+  
+       
+       function deleteid(){
+           $('#resident_table').on('click', 'button.delete', function(){
+               let id = $(this).data('residents');
+                       Swal.fire({
+                           title: 'Are you sure?',
+                           text: "You want to delete it?",
+                           icon: 'warning',
+                           showCancelButton: true,
+                           confirmButtonColor: '#3085d6',
+                           cancelButtonColor: '#d33',
+                           confirmButtonText: 'Yes, delete it!'
+                       }).then((result) => {
+                           if (result.isConfirmed) {
+                               $.ajax({
+                                   url: 'fetch.php',
+                                   type: 'POST',
+                                   data: {
+                                       delete: true,
+                                       id: id
+                                   },
+                                   success: function(response) {
+                                       if (response.trim() === "Your data has been deleted.") {
+                                           Swal.fire(
+                                               'Deleted!',
+                                               'File has been deleted successfully.',
+                                               'success'
+                                           );
+                                           $('#resident_table').DataTable().ajax.reload(null, false);
+                                       } else {
+                                           Swal.fire(
+                                               'Failed!',
+                                               'Failed to delete file.',
+                                               'error'
+                                           );
+                                       }
+                                   },
+                               });
+                           }
+                       });
+                   });
+           }
+        
+       
+          function edit() {
+           $('#resident_table').on('click', 'button.edit', function() {
+               let id = $(this).data('residents');
+               $.ajax({
+                   url: 'fetch.php',
+                   type: 'POST',
+                   data: {
+                       getdata: true,
+                       id: id
+                   },
+                   success: function(response) {
+                       if (response.trim() !== "") {
+                           var data = JSON.parse(response);
+                           Swal.fire({
+                               title: 'Resident Details',
+                               html: '<label>Firstname:</label>' +
+                                     '<input id="swal-input1" class="form-control mb-2" value="' + data[0].firstname + '">' +
+                                     '<label>Middlename:</label>' +
+                                     '<input id="swal-input2" class="form-control mb-2" value="' + data[0].middlename + '">' +
+                                     '<label>Lastname:</label>' +
+                                     '<input id="swal-input3" class="form-control mb-2" value="' + data[0].lastname + '">' +
+                                     '<label>Address:</label>' +
+                                     '<input id="swal-input4" class="form-control mb-2" value="' + data[0].phone_number + '">' +
+                                     '<label>Mobile Number:</label>' +
+                                     '<input id="swal-input5" class="form-control mb-2" value="' + data[0].residents_type + '">',
+                                     
+                               focusConfirm: false,
+                               confirmButtonText: 'Update',
+                               preConfirm: () => {
+                                   const value1 = document.getElementById('swal-input1').value;
+                                   const value2 = document.getElementById('swal-input2').value;
+                                   const value3 = document.getElementById('swal-input3').value;
+                                   const value4 = document.getElementById('swal-input4').value;
+                                   const value5 = document.getElementById('swal-input5').value;
+        
+                                   return [value1, value2, value3, value4, value5];
+                               },
+                           }).then((result) => {
+                               if (result.isConfirmed) {
+                                   const [value1, value2, value3, value4, value5]= result.value;
+                                   $.ajax({
+                                       url: 'fetch.php',
+                                       type: 'POST',
+                                       data: {
+                                           update: true,
+                                           id: id,
+                                           firstname: value1,
+                                           middlename: value2,
+                                           lastname: value3,
+                                           phone_number: value4,
+                                           residents_type: value5,
+                                       },
+                                       success: function(response) {
+                                           if (response.trim() === "Updated Successfully") {
+                                               Swal.fire(
+                                                   'Updated!',
+                                                   'File has been updated successfully.',
+                                                   'success'
+                                               );
+                                               $('#resident_table').DataTable().ajax.reload(null, false);
+                                           } else {
+                                               Swal.fire(
+                                                   'Failed!',
+                                                   'Failed to update file.',
+                                                   'error'
+                                               );
+                                           }
+                                       },
+                                   });
+                               }
+                           });
+                       }
+                   },
+               });
+           });
+           };
+        })
+       
+
+        $(document).ready(function () {
+            let table = $('#volumeTable').DataTable({
+                ajax: {
+                    url: 'get_volume_his.php',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { data: 'station' },
+                    { data: 'period' },
+                    { data: 'volume' },
+                    { data: 'readings' }
+                ]
+            });
+        
+        
+            $('#filterSelect').on('change', function () {
+                let selectedFilter = $(this).val();
+                table.ajax.url('get_volume_his.php?filter=' + selectedFilter).load();
+            });
+        });
+        
+
+
+
+    
+
+        
 document.addEventListener('DOMContentLoaded', function () {
     var currentLocation = location.href;
     var menuItem = document.querySelectorAll('#sidebarNav .nav-link');
@@ -195,116 +492,88 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-$(document).ready(function(){
-fetch('weather_function.php')
-.then(response => response.json())
-.then(locationData => {
-    if (locationData.error) {
-        document.getElementById('weather').innerHTML = `<p class="error">${locationData.error}</p>`;
-        return;
-    }
-    const locationName = locationData.location_name;
-    const weatherUrl = `https://api.weatherapi.com/v1/forecast.json?key=a2229b0bcd0541aaa3b50730242311&q=${locationName}&days=1&aqi=no&alerts=no&`;
-    fetch(weatherUrl)
-        .then(response => response.json())
-        .then(weatherData => {
-            const weatherDiv = document.getElementById('weather');
-            if (weatherData.error) {
-                weatherDiv.innerHTML = `<p class="error">${weatherData.error.message}</p>`;
-            } else {
-                const { location, current, forecast } = weatherData;
-                const iconUrl = `https:${current.condition.icon}`;
-                const temperature = current.temp_c;
-                const condition = current.condition.text;
-                const humidity = current.humidity;
-                const windSpeed = current.wind_kph;
-                const forecastText = forecast.forecastday[0].day.condition.text;
-                const totalPrecipMm = forecast.forecastday[0].day.totalprecip_mm;
 
-       
-                document.getElementById('location-name').textContent = 'Location:'+' '+location.name;
-                document.getElementById('date-time').textContent = new Date().toLocaleString();
-                document.getElementById('weather-icon').src = iconUrl;
-                document.getElementById('temperature').textContent = `${temperature}°C`;
-                document.getElementById('condition').textContent = condition;
-                document.getElementById('humidity').textContent = `Humidity: ${humidity}%`;
-                document.getElementById('wind-speed').textContent = `Wind Speed: ${windSpeed} km/h`;
+  
 
-           
-                let floodChanceText = "Flood Chance: --%";
-                let floodClass = "text-white";  
 
-                if (parseFloat(totalPrecipMm) < 20) {
-                    floodClass = "";  
-                    floodChanceText = `Flood Chance: ${totalPrecipMm}%`;
-                } else if (parseFloat(totalPrecipMm) >= 20 && parseFloat(totalPrecipMm) < 70) {
-                    floodClass = "text-warning";  
-                    floodChanceText = `Flood Chance: ${totalPrecipMm}%`;
-                } else if (parseFloat(totalPrecipMm) >= 70) {
-                    floodClass = "text-danger";  
-                    floodChanceText = `Flood Chance: ${totalPrecipMm}%`;
-                }
 
-                // Update the flood chance display
-                const floodElement = document.getElementById('flood-chance');
-                floodElement.className = floodClass; 
-                floodElement.textContent = floodChanceText;  
-
-                // Display Hourly Forecast
-                const hourlyForecast = forecast.forecastday[0].hour;
-                const hourlyContainer = document.getElementById('hourly-forecast');
-                hourlyContainer.innerHTML = ''; 
-
-                hourlyForecast.forEach((hourData, index) => {
-                    const hourTime = new Date(hourData.time);
-                    const hourCondition = hourData.condition.text;
-                    const hourTemp = hourData.temp_c;
-                    const hourIcon = `https:${hourData.condition.icon}`;
-                    const precipitation = hourData.precip_mm;
-
-           
-                    const hourBlock = document.createElement('div');
-                    hourBlock.classList.add('hour-block');
-
-                    let rainType = 'No rain';
-                    if (hourCondition.toLowerCase().includes('patchy rain')) {
-                        rainType = 'Patchy Rain';
-                    } else if (hourCondition.toLowerCase().includes('rain')) {
-                        rainType = 'Rain';
-                    }
-
-                    hourBlock.innerHTML = `
-                        <div class="hour-time">${hourTime.getHours()}:00</div>
-                        <img src="${hourIcon}" alt="icon" class="hour-icon">
-                        <div class="hour-temp">${hourTemp}°C</div>
-                        <div class="hour-condition">${hourCondition}</div>
-                        <div class="hour-rain">${rainType}</div>
-                        <div class="hour-precip">Precipitation: ${precipitation}mm</div>
-                    `;
-
-                    hourlyContainer.appendChild(hourBlock);
+function checkSensorStatus() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'check_status.php', true);
+    
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            var response = JSON.parse(xhr.responseText);
+            
+            if (response.status === "warning" || response.status === "error") {
+                response.stations.forEach(station => {
+                    // console.warn("Station " + station.station + " issue: " + station.message);
+                    toastr.error("⚠ Warning: " + station.message);
+                  
                 });
-
-                // Update other weather details
-                document.getElementById('weather_forecast_text').textContent = forecastText;
-                document.getElementById('weather_forecast_text_location').textContent = `in ${location.name}`;
             }
-        })
-        .catch(error => {
-            console.error('Error fetching weather data:', error);
-            document.getElementById('weather').innerHTML = `<p class="error">Error fetching weather data.</p>`;
-        });
-})
-.catch(error => {
-    console.error('Error fetching location data:', error);
-    document.getElementById('weather').innerHTML = `<p class="error">Error fetching location data.</p>`;
-});
-})
+        } else {
+            // console.error("Failed to fetch sensor status.");
+        }
+    };
 
-function updateDateTime() {
-    const now = new Date();
-    document.getElementById('date-time').textContent = now.toLocaleString();
+    xhr.onerror = function () {
+        // console.error("AJAX request failed.");
+    };
+
+    xhr.send();
 }
 
-setInterval(updateDateTime, 1000);
-updateDateTime();
+
+setInterval(checkSensorStatus, 6000);
+
+
+checkSensorStatus();
+
+document.getElementById("generateReport").addEventListener("click", function () {
+    var timeRange = document.getElementById("timeRange").value;
+    var station = document.getElementById("station").value;
+    var xhr = new XMLHttpRequest();
+
+    // FIXED: Added & between parameters
+    xhr.open("GET", "fetch_report.php?time_range=" + encodeURIComponent(timeRange) + "&station=" + encodeURIComponent(station), true);
+
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            document.getElementById("modalReportContent").innerHTML = xhr.responseText;
+
+            var reportModal = new bootstrap.Modal(document.getElementById("reportModal"));
+            reportModal.show();
+        } else {
+            alert("Failed to fetch the report.");
+        }
+    };
+    xhr.send();
+});
+
+
+function printTable() {
+    var modalContent = document.getElementById("modalReportContent").innerHTML;
+    
+    var newWindow = window.open("", "_blank");
+    newWindow.document.write(`
+        <html>
+            <head>
+                <title>Print Report</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { border: 1px solid black; padding: 8px; text-align: left; }
+                    @media print { body { visibility: visible; } }
+                </style>
+            </head>
+            <body>
+                ${modalContent}
+            </body>
+        </html>
+    `);
+    
+    newWindow.document.close();
+    newWindow.print();
+    newWindow.close();
+}

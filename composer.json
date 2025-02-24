@@ -24,6 +24,7 @@
   },
   "minimum-stability": "dev",
   "require": {
-    "phpmailer/phpmailer": "dev-master"
+    "phpmailer/phpmailer": "dev-master",
+    "phpoffice/phpspreadsheet": "dev-master"
   }
 }

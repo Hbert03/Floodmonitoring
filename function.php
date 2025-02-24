@@ -9,14 +9,14 @@ if (isset($_POST['save'])){
     $lname = $_POST['lastname'];
     $phone = $_POST['phone'];
     $residents = $_POST['residents'];
-    $station = $_POST['station'];
 
 
-        $query = "INSERT INTO recipients (firstname, middlename, lastname, phone_number, residents_type, station) VALUES(?, ?, ?,?,?,?)";
+
+        $query = "INSERT INTO recipients (firstname, middlename, lastname, phone_number, residents_type) VALUES(?, ?,?,?,?)";
         $stmt = $conn->prepare($query);
 
         if($stmt){
-            $stmt->bind_param("ssssss", $fname, $mname, $lname, $phone, $residents, $station);
+            $stmt->bind_param("sssss", $fname, $mname, $lname, $phone, $residents);
 
          if($stmt->execute()){
             echo json_encode(["success"=> true]);

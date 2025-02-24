@@ -35,7 +35,9 @@
 <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script src="graph.js"></script>
+<script src="graph1.js"></script>
 <script src="script.js"></script>
 <script src="station1.js"></script>
+<script src="live_date.js"></script>
 </body>
 </html>

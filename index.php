@@ -37,10 +37,28 @@ include('header.php');
             <div class="row">
                 <div class="col-md-6">
                     <p id="location-name"><span><p id="date-time"></p></span></p>
+                    <div class="row">
+                    <div class="col">
+                    <p style="color:black; font-size:25px">Water Speed:</p>
+                    <div id="gaugeContainer" style="width: 120px; height: 120px;"></div>
+                  
+                    </div>  
+                    <div class="col">
+                    <p style="color:black; font-size:25px">Water Speed:</p>
+                   
+                    <div id="gaugeContainer1" style="width: 120px; height: 120px;"></div>
+                    </div>
+                    </div>
                 </div>
                 <div class="col-md-6">
-                    <p id="flood-chance" class="float-right"><span><p style="color:black; font-weight:bold; font-size:25px"  id="total-volume">Total Volume: Loading...</pv></span></p>
+                    <p id="flood-chance" class="float-right">
+                    <span><p style="color:black; font-weight:bold; font-size:25px"  id="station-1">Total Volume: Loading...</p></span>
+                    <span><p style="color:black; font-weight:bold; font-size:25px"  id="station-2">Total Volume: Loading...</p></span>
+                    <span><p style="color:black; font-weight:bold; font-size:25px"  id="station-3">Total Volume: Loading...</p></span>
+                      <span><p style="color:black; font-weight:bold; font-size:25px"  id="total-volume">Total Volume: Loading...</p></span>
+                     
                 </div>
+               
                
             </div>
             <div class="row">
